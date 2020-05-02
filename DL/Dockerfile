@@ -1,18 +1,32 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:latest
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
-RUN mkdir /playground
+RUN mkdir /data
 
 RUN set -ex \
     && apt-get update -yqq \
     && apt-get upgrade -yqq \
     && apt-get install -yqq --no-install-recommends \
-        git wget curl ssh libxrender1 libxext6 software-properties-common apt-utils \
+        git \
+        wget \
+        curl \
+        ssh \
+        libxrender1 \
+        libxext6 \
+        software-properties-common \
+        apt-utils \
+        net-tools \
+        iproute2 \
+        screen \
+        nmon \
+        htop \
+        vim \
     && wget --no-check-certificate https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh \
     && /bin/bash Miniconda3-4.7.12.1-Linux-x86_64.sh -f -b -p /opt/miniconda \
-    && /opt/miniconda/bin/conda install conda=4.8.1=py37_0 \
+    && /opt/miniconda/bin/conda install conda=4.8.1 \
+    && /opt/miniconda/bin/conda install python=3.6 \
     && /opt/miniconda/bin/conda clean -yq -a \
     && rm Miniconda3-4.7.12.1-Linux-x86_64.sh \
     && rm -rf \
@@ -23,13 +37,45 @@ RUN set -ex \
         /usr/share/doc-base
 
 ENV PATH /opt/miniconda/bin:$PATH
-RUN conda install -yq numpy=1.16.0 scipy=1.2.0 matplotlib=3.0.1 \
-        pandas=0.25 scikit-learn=0.20.3 tqdm>=4.26.0 \
-    && conda install -yq -c pytorch pytorch=1.1.0 torchvision=0.2.1 \
-    && conda install -c conda-forge jupyterlab \
-    && conda clean -yq -a \
-    && pip install tensorflow-gpu==1.14
 
-WORKDIR /playground
+# default ML packets
+RUN conda install -y \
+    pandas \
+    numpy \
+    cloudpickle \
+    dill \
+    flask \
+    psycopg2 \
+    pyaudio \
+    ipython \
+    scikit-learn \
+    seaborn \
+    matplotlib \
+    scipy \
+    pydot \
+    graphviz \
+    tqdm \ 
+    ipython \
+  && conda install -c conda-forge -y \
+    imbalanced-learn \
+    category_encoders \
+  && conda install -c conda-forge jupyterlab \
+  && conda install conda
+
+# ML on GPU: https://rapids.ai/start.html#rapids-release-selector
+RUN conda install -c rapidsai -c nvidia -c conda-forge -c defaults -y \
+    rapids=0.13 \
+    cudatoolkit=10.2
+
+# DL packets
+RUN conda install -c pytorch -y \
+    pytorch \
+    torchvision
+RUN pip install --upgrade tensorflow
+
+# verify installation
+RUN python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1000])))"
+
+WORKDIR /data
 
 CMD [ "/bin/bash" ]
