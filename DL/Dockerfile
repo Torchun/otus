@@ -59,7 +59,9 @@ RUN conda install -y \
   && conda install -c conda-forge -y \
     imbalanced-learn \
     category_encoders \
-  && conda install -c conda-forge jupyterlab \
+  && conda install -c conda-forge -y jupyterlab \
+    librosa \
+  && pip install pyAudioAnalysis \
   && conda install conda
 
 # ML on GPU: https://rapids.ai/start.html#rapids-release-selector
