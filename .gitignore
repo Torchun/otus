@@ -2,3 +2,5 @@ DL/2020/lecture_notebooks
 DL/2020/lecture_notebooks/*
 DL/2020/.ipynb_checkpoints*
 **/.ipynb_checkpoints
+**/__pycache__
+**/MNIST_data

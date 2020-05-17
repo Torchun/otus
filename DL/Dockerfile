@@ -56,6 +56,7 @@ RUN conda install -y \
     graphviz \
     tqdm \ 
     ipython \
+    ipywidgets \
   && conda install -c conda-forge -y \
     imbalanced-learn \
     category_encoders \
