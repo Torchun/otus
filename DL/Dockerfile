@@ -23,6 +23,7 @@ RUN set -ex \
         nmon \
         htop \
         vim \
+        sox \
     && wget --no-check-certificate https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh \
     && /bin/bash Miniconda3-4.7.12.1-Linux-x86_64.sh -f -b -p /opt/miniconda \
     && /opt/miniconda/bin/conda install conda=4.8.1 \
@@ -56,7 +57,6 @@ RUN conda install -y \
     graphviz \
     tqdm \ 
     ipython \
-    ipywidgets \
   && conda install -c conda-forge -y \
     imbalanced-learn \
     category_encoders \
@@ -73,6 +73,7 @@ RUN conda install -c rapidsai -c nvidia -c conda-forge -c defaults -y \
 # DL packets
 RUN conda install -c pytorch -y \
     pytorch \
+    torchaudio \
     torchvision
 RUN pip install --upgrade tensorflow
 
